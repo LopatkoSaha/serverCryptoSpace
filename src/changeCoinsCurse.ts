@@ -1,6 +1,6 @@
 import {Coins} from "./dbModels/Coins";
 import {observer} from './helpers/observer';
-import {actualCoins} from './dbModels/Coins';
+import {actualCoins} from './actualCoins';
 
 
 
@@ -36,7 +36,9 @@ export const changeCoinsCurse = async () => {
                     })
             await Coins.create(currentCointCurse)
             }
-        observer.emit(JSON.stringify(await Coins.findOne().sort({_id: -1})));
+        await sendCurse();
     }, 600000)
 }
-
+export const sendCurse = async () => {
+    observer.emit(JSON.stringify(await Coins.findOne().sort({_id: -1})));
+}

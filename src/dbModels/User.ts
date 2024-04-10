@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import {actualCoins} from './Coins';
+import {actualCoins} from '../actualCoins';
 
 const coins: Record<string, any> = {};
 actualCoins.forEach((item) => {

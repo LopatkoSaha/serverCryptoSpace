@@ -9,11 +9,11 @@ const unit: Record<string, number> = {
     ms: 1,
     sec: 1000,
     min: 60000,
-    hour: 3600000,
-    day: 3600000*24,
-    week: 3600000*24,
-    month: 3600000*24*4,
-    year: 3600000*24*4*12,
+    hour: 3600000+600000,
+    day: 86400000,
+    week: 604800000,
+    month: 2419200000,
+    year: 29030400000,
 }
 //@ts-ignore
 router.post('/', async (req: any, res: any, next: NextFunction) => {
@@ -30,26 +30,33 @@ router.post('/', async (req: any, res: any, next: NextFunction) => {
                     {
                         [coin]: 1,
                         createdDate: 1,
+                        _id: 0
                     }
                 )
                 .sort({createdDate: 1}
                     );
-                    
+
             const sortedCursToPrecision: Array<Record<string, number | Date>> = [];
             let stepToSorted = 0;
 
             statistics.forEach((item, ind, arr) => {
-
                 if(!arr[ind + 1]) {
-                    sortedCursToPrecision.push(item);
+                    sortedCursToPrecision.push(arr[ind]);
                 }
-                else if(arr[ind + 1].createdDate.getTime() >= stepToSorted + unit[precision]) {
-                    sortedCursToPrecision.push(item);
-                    stepToSorted = item.createdDate.getTime();
+                else  
+                if(arr[ind + 1].createdDate.getTime() > stepToSorted + unit[precision]) {
+                    sortedCursToPrecision.push(arr[ind + 1]);
+                    stepToSorted = arr[ind + 1].createdDate
+                    .getTime();
                 }
             })
-
-            res.json(sortedCursToPrecision);
+            const currentDate = sortedCursToPrecision.map((item)=>{
+                
+                return {[coin]: item[coin], 
+                    createdDate: moment(item.createdDate).format('lll'),
+                };
+            })
+            res.json(currentDate);
         } catch (err) {
             console.log('err=', err);
             

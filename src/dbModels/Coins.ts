@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
+import {actualCoins} from '../actualCoins'
 
-
-export const actualCoins = ['bitcoin', 'ethereum', 'maker', 'bittensor', 'bnb', 'hui'];
 
 export const modelCoins: Record<string, any> = {createdDate: { type: Date, required: true }};
 actualCoins.forEach((item) => {
