@@ -11,7 +11,9 @@ import getStatisticsCurs from './getStatisticsCurs';
 import expressWs from "express-ws";
 import {changeCoinsCurse} from './changeCoinsCurse';
 import getAvailablelCoins from './getAvailablelCoins';
-import buyCurrency from './buyCurrency'
+import buyCurrency from './buyCurrency';
+import getDataPortfolio from './getDataPortfolio';
+
 
 const PORT = 4500;
 const app = express();
@@ -41,6 +43,7 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
     app.use('/statisticsCurs', getStatisticsCurs);
     app.use('/availableCoins', getAvailablelCoins);
     app.use('/buyCurrency', checkAuthUser, buyCurrency);
+    app.use('/dataPortfolio', checkAuthUser, getDataPortfolio);
 
     app.use((err: any, req: any, res: any)=>{
         switch (err.name) {
@@ -60,6 +63,8 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
                 return  res.status(411).json(err.message)
             case 'ActualCoinsError':
                 return  res.status(412).json(err.message)
+            case 'DataPortfolioError':
+                return  res.status(414).json(err.message)
             default: res.status(500).json('unknown error')
         }
     });
