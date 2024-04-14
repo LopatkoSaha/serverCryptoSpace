@@ -9,8 +9,9 @@ import whoAmI from './whoAmI';
 import getStatisticsCurs from './getStatisticsCurs';
 //@ts-ignore
 import expressWs from "express-ws";
-import {changeCoinsCurse} from './changeCoinsCurse'
-import getAvailablelCoins from './getAvailablelCoins'
+import {changeCoinsCurse} from './changeCoinsCurse';
+import getAvailablelCoins from './getAvailablelCoins';
+import buyCurrency from './buyCurrency'
 
 const PORT = 4500;
 const app = express();
@@ -39,6 +40,7 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
     app.use('/connectWS', webSocketRouter);
     app.use('/statisticsCurs', getStatisticsCurs);
     app.use('/availableCoins', getAvailablelCoins);
+    app.use('/buyCurrency', checkAuthUser, buyCurrency);
 
     app.use((err: any, req: any, res: any)=>{
         switch (err.name) {
@@ -52,6 +54,12 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
                 return  res.status(408).json(err.message)
             case 'WhoAmIError':
                 return  res.status(409).json(err.message)
+            case 'buyCurrencyError':
+                return  res.status(410).json(err.message)
+            case 'statisticsCursError':
+                return  res.status(411).json(err.message)
+            case 'ActualCoinsError':
+                return  res.status(412).json(err.message)
             default: res.status(500).json('unknown error')
         }
     });

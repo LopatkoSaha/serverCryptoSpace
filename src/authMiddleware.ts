@@ -13,7 +13,7 @@ export async function checkAuthUser(req: any, res: any, next: NextFunction) {
         if (err) {
             return next(err);
         } else {
-            req.body.user = {id: decoded.id, email: decoded.email}
+            req.body.user = {id: decoded.id}
             next();
         } 
     });

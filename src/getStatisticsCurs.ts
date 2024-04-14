@@ -1,4 +1,3 @@
-import { groupBy } from 'lodash';
 import express, { NextFunction, Request, Response, Router } from 'express';
 import {Coins} from "./dbModels/Coins";
 import moment from 'moment';
