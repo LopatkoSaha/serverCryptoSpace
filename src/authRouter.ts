@@ -1,8 +1,10 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import {User} from './dbModels/User';
+import {Portfolio} from './dbModels/Portfolio';
 import jwt from 'jsonwebtoken';
 import { NextFunction } from 'express';
+import {actualCoins} from './actualCoins';
 
 const router = express.Router();
 export const secretKey = 'sekret-key';
@@ -50,16 +52,21 @@ router.post('/registration',
                 name,
                 email,
                 password: hashPassword,
-                coins: {
-                    dollar: 1000,
-                    bitcoin: 0,
-                    ethereum: 0,
-                    maker: 0,
-                    bittensor: 0,
-                    bnb: 0,
-                }
-            });
+            }); 
             await user.save();
+
+            const coins: Record<string, any> = {};
+            actualCoins.forEach((item) => {
+                coins[item] = 0;
+            })
+
+            const portfolio = new Portfolio({
+                userId: user._id,
+                USD: 1000,
+                coins: coins
+            });
+            await portfolio.save();
+            
             res.json({message: 'User was created'});
         } catch (err) {
             const customError = new Error('RegistrationError');
