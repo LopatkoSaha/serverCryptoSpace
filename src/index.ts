@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import path from 'path';
 import cors from 'cors';
 import { NextFunction } from 'express';
+
 import { checkAuthUser } from './authMiddleware';
 import authRouter from './authRouter';
 import whoAmI from './whoAmI';
@@ -13,6 +14,9 @@ import {changeCoinsCurse} from './changeCoinsCurse';
 import getAvailablelCoins from './getAvailablelCoins';
 import buyCurrency from './buyCurrency';
 import getDataPortfolio from './getDataPortfolio';
+import buyAllIn from './buyAllIn';
+import { DataPortfolioError, BuyAllInError, ValidationError } from './errors/errors';
+
 
 
 const PORT = 4500;
@@ -43,10 +47,15 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
     app.use('/statisticsCurs', getStatisticsCurs);
     app.use('/availableCoins', getAvailablelCoins);
     app.use('/buyCurrency', checkAuthUser, buyCurrency);
-    app.use('/dataPortfolio', checkAuthUser, getDataPortfolio);
+    app.use('/portfolioUser', checkAuthUser, getDataPortfolio);
+    app.use('/buyAllIn', checkAuthUser, buyAllIn);
 
     app.use((err: any, req: any, res: any)=>{
-        switch (err.name) {
+        console.log(err);
+        
+        switch (err.errName) {
+            case ValidationError.errName:
+                return  res.status(401).json(err.message)
             case 'JsonWebTokenError':
                 return  res?.status(402).json(err.message)
             case 'TokenExpiredError':
@@ -63,8 +72,10 @@ const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retr
                 return  res.status(411).json(err.message)
             case 'ActualCoinsError':
                 return  res.status(412).json(err.message)
-            case 'DataPortfolioError':
+            case DataPortfolioError.errName:
                 return  res.status(414).json(err.message)
+            case BuyAllInError.errName:
+                return  res.status(415).json(err.message)
             default: res.status(500).json('unknown error')
         }
     });

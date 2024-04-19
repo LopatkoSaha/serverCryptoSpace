@@ -1,15 +1,14 @@
 import mongoose, { Schema } from 'mongoose';
-import {actualCoins} from '../actualCoins';
+import {allCurrency} from '../actualCoins';
 
 const coins: Record<string, any> = {};
-actualCoins.forEach((item) => {
+allCurrency.forEach((item) => {
     coins[item] = Number
 })
 
 const potfolioSchema = new Schema({
     userId: String,
-    USD: Number,
-    coins: coins
+    coins,
 });
 
 export const Portfolio = mongoose.model('Portfolio', potfolioSchema);

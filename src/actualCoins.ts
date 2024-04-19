@@ -1,4 +1,5 @@
 export const actualCoins = ['bitcoin', 'ethereum', 'maker', 'bittensor', 'bnb'];
+export const allCurrency = actualCoins.concat('USD')
 
 export const coinsIcon = {
     bitcoin: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1.png',
@@ -7,3 +8,4 @@ export const coinsIcon = {
     bittensor: 'https://s2.coinmarketcap.com/static/img/coins/64x64/29870.png',
     bnb: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
 }
+

@@ -10,7 +10,7 @@ const router = express.Router();
 export const secretKey = 'sekret-key';
 //@ts-ignore
 router.post('/login',
-    async (req: any, res: any, next: NextFunction) => {
+    async (req: any, res: any, next: NextFunction) => {        
         try{
             const {email, password} = req.body;
             const user = await User.findOne({email});
@@ -32,7 +32,7 @@ router.post('/login',
                 })
             }
         } catch (err) {
-            const customError = new Error('Login Error');
+            const customError = new Error('Login Error'); 
             customError.name = 'LoginError';
             next(customError)
         }
@@ -43,6 +43,7 @@ router.post('/registration',
     async (req: any, res: any, next: NextFunction) => {
         try{
             const {name, email, password} = req.body;
+            
             const candidate = await User.findOne({email});
             if (candidate) {
                 return res.status(400).json({message: `User with email ${email} already exist`})
@@ -55,15 +56,14 @@ router.post('/registration',
             }); 
             await user.save();
 
-            const coins: Record<string, any> = {};
+            const coins: Record<string, number> = {};
             actualCoins.forEach((item) => {
                 coins[item] = 0;
             })
 
             const portfolio = new Portfolio({
                 userId: user._id,
-                USD: 1000,
-                coins: coins
+                coins: {...coins, USD: 1000}
             });
             await portfolio.save();
             
