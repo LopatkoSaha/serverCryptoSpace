@@ -1,86 +1,66 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import path from 'path';
-import cors from 'cors';
-import { NextFunction } from 'express';
+import cors from "cors";
+import express from "express";
+import mongoose from "mongoose";
+import path from "path";
+import { allowOrigin, appPort, mongoURI } from "../config/config";
+import { changeCoinsCurse } from "./helpers/changeCoinsCurse";
+import { checkAuthUser } from "./middlewares/authMiddleware";
+import authRouter from "./routers/authRouter";
+import buyCurrency from "./routers/buyCurrency";
+import getAvailablelCoins from "./routers/getAvailablelCoins";
+import getDataPortfolio from "./routers/getDataPortfolio";
+import getStatisticsCurs from "./routers/getStatisticsCurs";
+import whoAmI from "./routers/whoAmI";
+import "./webSocketServer";
 
-import { checkAuthUser } from './authMiddleware';
-import authRouter from './authRouter';
-import whoAmI from './whoAmI';
-import getStatisticsCurs from './getStatisticsCurs';
-//@ts-ignore
-import expressWs from "express-ws";
-import {changeCoinsCurse} from './changeCoinsCurse';
-import getAvailablelCoins from './getAvailablelCoins';
-import buyCurrency from './buyCurrency';
-import getDataPortfolio from './getDataPortfolio';
-import buyAllIn from './buyAllIn';
-import { DataPortfolioError, BuyAllInError, ValidationError } from './errors/errors';
-
-
-
-const PORT = 4500;
 const app = express();
-expressWs(app);
-import webSocketRouter from './webSocketRouter';
-const db = 'mongodb+srv://lopatko:123ewqqwe321@lopatko.pmwti90.mongodb.net/?retryWrites=true&w=majority';
+
+app.use(express.static(path.resolve(__dirname, "build")));
+app.use(express.json());
+app.use(cors({
+    allowedHeaders: "Content-Type, Authorization",
+    origin: allowOrigin,
+}));
+app.use("/auth", authRouter);
+app.use("/whoAmI", checkAuthUser, whoAmI);
+app.use("/statisticsCurs", getStatisticsCurs);
+app.use("/availableCoins", getAvailablelCoins);
+app.use("/buyCurrency", checkAuthUser, buyCurrency);
+app.use("/dataPortfolio", checkAuthUser, getDataPortfolio);
+
+app.use((err: any, req: any, res: any, next: any) => {
+    switch (err.name) {
+        case "JsonWebTokenError":
+            return  res.status(402).json(err.message);
+        case "TokenExpiredError":
+            return  res.status(403).json(err.message);
+        case "RegistrationError":
+            return  res.status(407).json(err.message);
+        case "LoginError":
+            return  res.status(408).json(err.message);
+        case "WhoAmIError":
+            return  res.status(409).json(err.message);
+        case "buyCurrencyError":
+            return  res.status(410).json(err.message);
+        case "statisticsCursError":
+            return  res.status(411).json(err.message);
+        case "ActualCoinsError":
+            return  res.status(412).json(err.message);
+        case "DataPortfolioError":
+            return  res.status(414).json(err.message);
+        default: res.status(500).json("unknown error");
+    }
+});
 
 (async () => {
     try {
-        await mongoose.connect(db);
-        console.log('Connected to database');
+        await mongoose.connect(mongoURI);
+        console.log("Connected to database");
     } catch (err) {
         console.error(err);
     }
-
-    app.use(express.static(path.resolve(__dirname, 'build')));
-    app.use(express.json());
-    app.use(cors());
-    app.use((req: any, res: any, next: NextFunction) => {
-        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        next();
-    });
-    app.use('/auth', authRouter);
-    app.use('/whoAmI', checkAuthUser, whoAmI);
-    app.use('/connectWS', webSocketRouter);
-    app.use('/statisticsCurs', getStatisticsCurs);
-    app.use('/availableCoins', getAvailablelCoins);
-    app.use('/buyCurrency', checkAuthUser, buyCurrency);
-    app.use('/portfolioUser', checkAuthUser, getDataPortfolio);
-    app.use('/buyAllIn', checkAuthUser, buyAllIn);
-
-    app.use((err: any, req: any, res: any)=>{
-        console.log(err);
-        
-        switch (err.errName) {
-            case ValidationError.errName:
-                return  res.status(401).json(err.message)
-            case 'JsonWebTokenError':
-                return  res?.status(402).json(err.message)
-            case 'TokenExpiredError':
-                return  res.status(403).json(err.message)
-            case 'RegistrationError':
-                return  res.status(407).json(err.message)
-            case 'LoginError':
-                return  res.status(408).json(err.message)
-            case 'WhoAmIError':
-                return  res.status(409).json(err.message)
-            case 'buyCurrencyError':
-                return  res.status(410).json(err.message)
-            case 'statisticsCursError':
-                return  res.status(411).json(err.message)
-            case 'ActualCoinsError':
-                return  res.status(412).json(err.message)
-            case DataPortfolioError.errName:
-                return  res.status(414).json(err.message)
-            case BuyAllInError.errName:
-                return  res.status(415).json(err.message)
-            default: res.status(500).json('unknown error')
-        }
-    });
     changeCoinsCurse();
-    app.listen(PORT, () => {
-        console.log(`Listening port ${PORT}`);
+    app.listen(appPort, () => {
+        console.log(`Listening port ${appPort}`);
     });
 })();
