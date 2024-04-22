@@ -26,7 +26,7 @@ app.use("/whoAmI", checkAuthUser, whoAmI);
 app.use("/statisticsCurs", getStatisticsCurs);
 app.use("/availableCoins", getAvailablelCoins);
 app.use("/buyCurrency", checkAuthUser, buyCurrency);
-app.use("/dataPortfolio", checkAuthUser, getDataPortfolio);
+app.use("/portfolio", checkAuthUser, getDataPortfolio);
 
 app.use((err: any, req: any, res: any, next: any) => {
     switch (err.name) {

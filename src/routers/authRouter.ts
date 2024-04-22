@@ -56,13 +56,12 @@ router.post("/registration", async (req: any, res: any, next: NextFunction) => {
       });
 
       const portfolio = new Portfolio({
-        USD: 1000,
-        coins,
+        coins: {...coins, USD: 1000},
         userId: user._id,
       });
       await portfolio.save();
 
-      res.json({message: "User was created"});
+      res.json({message: `User ${user.email} was created`});
     } catch (err) {
       const customError = new Error("RegistrationError");
       customError.name = "RegistrationError";

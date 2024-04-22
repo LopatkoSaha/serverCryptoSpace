@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 import { jsonSecretKey } from "../../config/config";
 
 export async function checkAuthUser(req: any, res: any, next: NextFunction) {
-  if (!req.body.token) {
+  if (!req.headers.token) {
     return res.status(401).json({ message: "No token provided" });
   }
-  jwt.verify(req.body.token, jsonSecretKey, (err: any, decoded: any) => {
+  jwt.verify(req.headers.token, jsonSecretKey, (err: any, decoded: any) => {
     if (err) {
       return next(err);
     } else {
