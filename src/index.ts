@@ -19,7 +19,7 @@ const app = express();
 app.use(express.static(path.resolve(__dirname, "build")));
 app.use(express.json());
 app.use(cors({
-    allowedHeaders: "Content-Type, Authorization",
+    allowedHeaders: "*",
     origin: allowOrigin,
 }));
 app.use("/auth", authRouter);

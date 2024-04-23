@@ -33,8 +33,9 @@ export const changeCoinsCurse = () => {
       await Coins.create(currentCointCurse);
     }
     await sendCurse();
-  }, 60000);
+  }, 600000);
 };
+
 export const sendCurse = async () => {
   observer.emit(JSON.stringify(await Coins.findOne().sort({_id: -1})));
 };

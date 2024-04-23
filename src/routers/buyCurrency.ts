@@ -44,11 +44,11 @@ router.post("/buy", async (req: any, res: any, next: NextFunction) => {
       await Portfolio.updateOne({_id: potfolioUser._id}, {
           coins: {
               ...potfolioUser.coins,
-              [buyFrom]: (potfolioUser.coins[buyFrom] - (currentCourse[buyTo] * +quantity/currentCourse[buyFrom])).toFixed(2),
+              [buyFrom]: (potfolioUser.coins[buyFrom] - (+quantity * currentCourse[buyTo] / currentCourse[buyFrom])).toFixed(2),
               [buyTo]: potfolioUser.coins[buyTo] + +quantity,
           },
       });
-      res.json(`Operation was a success, was been buyed ${quantity} ${buyTo} for ${(currentCourse[buyTo] * +quantity/currentCourse[buyFrom]).toFixed(2)} ${buyFrom}`);
+      res.json(`Operation was a success, was been buyed ${quantity} ${buyTo} for ${(+quantity * currentCourse[buyTo] / currentCourse[buyFrom]).toFixed(2)} ${buyFrom}`);
     } catch (err) {
       console.log("err=", err);
       next(new BuyCurrencyError("Buy Currency Error"));
@@ -76,11 +76,11 @@ router.post('/buyAllIn', async (req: any, res: any, next: NextFunction) => {
           await Portfolio.updateOne({_id: potfolioUser._id}, {
               coins: {
                   ...potfolioUser.coins,
+                  [buyTo]: (potfolioUser.coins[buyTo] +  (potfolioUser.coins[buyFrom] * currentCourse[buyFrom]) / currentCourse[buyTo]).toFixed(2),
                   [buyFrom]: 0,
-                  [buyTo]: (potfolioUser.coins[buyTo] + currentCourse[buyTo] * (potfolioUser.coins[buyFrom] / currentCourse[buyFrom])).toFixed(2),
-              },
+                },
           });
-          res.json(`You buyed ${currentCourse[buyTo] * (potfolioUser.coins[buyFrom] / currentCourse[buyFrom])} ${buyTo} for all ${buyFrom}`);
+          res.json(`Operation was a success, was been buyed ${(potfolioUser.coins[buyFrom] * currentCourse[buyFrom] / currentCourse[buyTo]).toFixed(2)} ${buyTo} for all ${buyFrom}`);
       } catch (err) {
           console.log("err=", err);
           next(new BuyAllInError("Buy all in Error"));

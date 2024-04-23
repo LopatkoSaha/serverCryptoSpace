@@ -1,6 +1,7 @@
 /* tslint:disable:max-classes-per-file */
 export class TokenExpiredError extends Error {
     public errName = "TokenExpiredError";
+
 }
 export class JsonWebTokenError extends Error {
     public errName = "JsonWebTokenError";

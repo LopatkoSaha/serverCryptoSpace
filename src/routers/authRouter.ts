@@ -17,7 +17,7 @@ router.post("/login", async (req: any, res: any, next: any) => {
         return res.status(404).json({message: "user is not"});
       }
       if (typeof user.password !== "string") {
-        return new Error("Password type is a not string");
+        return res.status(400).json({message: "Password type is a not string"});
       }
       const isPassValid = bcrypt.compareSync(password, user.password );
 
@@ -50,7 +50,6 @@ router.post("/registration", async (req: any, res: any, next: NextFunction) => {
         password: hashPassword,
       });
       await user.save();
-
       const coins: Record<string, any> = {};
       actualCoins.forEach((item) => {
         coins[item] = 0;
@@ -61,7 +60,6 @@ router.post("/registration", async (req: any, res: any, next: NextFunction) => {
         userId: user._id,
       });
       await portfolio.save();
-
       res.json({message: `User ${user.email} was created`});
     } catch (err) {
       console.log("err=", err);
