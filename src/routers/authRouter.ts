@@ -1,10 +1,12 @@
 import bcrypt from "bcrypt";
 import express, { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+
 import { jsonExpiresIn, jsonSecretKey } from "../../config/config";
 import { actualCoins } from "../actualCoins";
 import { Portfolio } from "../dbModels/Portfolio";
 import { User } from "../dbModels/User";
+import { LoginError, RegistrationError } from "../errors/errors";
 
 const router = express.Router();
 router.post("/login", async (req: any, res: any, next: any) => {
@@ -28,9 +30,8 @@ router.post("/login", async (req: any, res: any, next: any) => {
         token,
       });
     } catch (err) {
-      const customError = new Error("Login Error");
-      customError.name = "LoginError";
-      next(customError);
+      console.log("err=", err);
+      next(new LoginError("Login Error"));
     }
   },
 );
@@ -63,9 +64,8 @@ router.post("/registration", async (req: any, res: any, next: NextFunction) => {
 
       res.json({message: `User ${user.email} was created`});
     } catch (err) {
-      const customError = new Error("RegistrationError");
-      customError.name = "RegistrationError";
-      next(customError);
+      console.log("err=", err);
+      next(new RegistrationError("Registration Error"));
     }
   },
 );

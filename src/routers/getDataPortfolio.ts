@@ -1,5 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
+
 import { Portfolio } from "../dbModels/Portfolio";
+import {  DataPortfolioError } from "../errors/errors";
 
 const router = express.Router();
 
@@ -10,9 +12,7 @@ router.post("/", async (req: any, res: any, next: NextFunction) => {
       res.json(potfolioUser);
     } catch (err) {
       console.log("err=", err);
-      const customError = new Error("DataPotrtfolio Error");
-      customError.name = "DataPotrtfolioError";
-      next(customError);
+      next(new DataPortfolioError("Data Portfolio Error"));
     }
   },
 );

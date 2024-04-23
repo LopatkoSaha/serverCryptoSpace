@@ -1,5 +1,7 @@
-import express from "express";
-import { NextFunction } from "express";
+import express, { NextFunction } from "express";
+
+import { WhoAmIError } from "../errors/errors";
+
 
 const router = express.Router();
 
@@ -8,9 +10,8 @@ router.post("/", async (req: any, res: any, next: NextFunction) => {
             const {user} = req.body;
             res.json(user);
         } catch (err) {
-            const customError = new Error("History curs Error");
-            customError.name = "HistoryCursError";
-            next(customError);
+            console.log("err=", err);
+            next(new WhoAmIError("Who Am I Error"));
         }
     },
 );

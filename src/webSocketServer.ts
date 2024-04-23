@@ -1,4 +1,5 @@
 import { WebSocketServer } from "ws";
+
 import { wsPath, wsPort } from "../config/config";
 import { sendCurse } from "./helpers/changeCoinsCurse";
 import { observer } from "./helpers/observer";
