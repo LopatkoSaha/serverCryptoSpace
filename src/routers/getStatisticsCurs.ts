@@ -1,6 +1,8 @@
 import express, { NextFunction, Request, Response, Router } from "express";
 import moment from "moment";
+
 import { Coins } from "../dbModels/Coins";
+import {  StatisticsCursError } from "../errors/errors";
 
 const router = express.Router();
 
@@ -57,10 +59,7 @@ router.post("/", async (req: any, res: any, next: NextFunction) => {
       res.json(currentDate);
     } catch (err) {
       console.log("err=", err);
-
-      const customError = new Error("statisticsCurs Error");
-      customError.name = "statisticsCursError";
-      next(customError);
+      next(new StatisticsCursError("Statistics Curs Error"));
     }
   },
 );

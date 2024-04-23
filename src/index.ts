@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
+
 import { allowOrigin, appPort, mongoURI } from "../config/config";
 import { changeCoinsCurse } from "./helpers/changeCoinsCurse";
 import { checkAuthUser } from "./middlewares/authMiddleware";
@@ -29,25 +30,28 @@ app.use("/buyCurrency", checkAuthUser, buyCurrency);
 app.use("/portfolio", checkAuthUser, getDataPortfolio);
 
 app.use((err: any, req: any, res: any, next: any) => {
-    switch (err.name) {
-        case "JsonWebTokenError":
-            return  res.status(402).json(err.message);
+
+    switch (err.errName) {
         case "TokenExpiredError":
             return  res.status(403).json(err.message);
+        case "JsonWebTokenError":
+            return  res.status(402).json(err.message);
         case "RegistrationError":
             return  res.status(407).json(err.message);
         case "LoginError":
             return  res.status(408).json(err.message);
-        case "WhoAmIError":
-            return  res.status(409).json(err.message);
-        case "buyCurrencyError":
+        case "BuyCurrencyError":
             return  res.status(410).json(err.message);
-        case "statisticsCursError":
-            return  res.status(411).json(err.message);
+        case "BuyAllInError":
+            return  res.status(410).json(err.message);
         case "ActualCoinsError":
             return  res.status(412).json(err.message);
         case "DataPortfolioError":
             return  res.status(414).json(err.message);
+        case "StatisticsCursError":
+            return  res.status(411).json(err.message);
+        case "WhoAmIError":
+            return  res.status(409).json(err.message);
         default: res.status(500).json("unknown error");
     }
 });

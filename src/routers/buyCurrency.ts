@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response, Router } from "express";
 
 import { Coins } from "../dbModels/Coins";
 import { Portfolio } from "../dbModels/Portfolio";
-import { BuyAllInError, DataPortfolioError, ValidationError } from "../errors/errors";
+import { BuyAllInError, DataPortfolioError, ValidationError, BuyCurrencyError } from "../errors/errors";
 import { allCurrency } from "../actualCoins";
 
 const router = express.Router();
@@ -51,7 +51,7 @@ router.post("/buy", async (req: any, res: any, next: NextFunction) => {
       res.json(`Operation was a success, was been buyed ${quantity} ${buyTo} for ${(currentCourse[buyTo] * +quantity/currentCourse[buyFrom]).toFixed(2)} ${buyFrom}`);
     } catch (err) {
       console.log("err=", err);
-      next(new BuyAllInError("buyCurrency Error"));
+      next(new BuyCurrencyError("Buy Currency Error"));
     }
   },
 );
