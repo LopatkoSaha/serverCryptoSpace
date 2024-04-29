@@ -36,6 +36,9 @@ router.post("/buy", async (req: any, res: any, next: NextFunction) => {
       const currentCourse: Record<string, any> = lastCourse[lastCourse.length - 1];
       currentCourse.USD = 1;
       const {buyFrom, buyTo, quantity} = req.body;
+      if (!potfolioUser.coins[buyTo]){
+        potfolioUser.coins[buyTo] = 0;
+      }
       if(potfolioUser.coins[buyFrom] < currentCourse[buyTo] * +quantity/currentCourse[buyFrom]) {
         res.json(`You short on ${buyFrom} for transaction `)
         return
@@ -73,6 +76,9 @@ router.post('/buyAllIn', async (req: any, res: any, next: NextFunction) => {
           currentCourse.USD = 1;
 
           const {buyFrom, buyTo} = req.body;
+          if (!potfolioUser.coins[buyTo]){
+            potfolioUser.coins[buyTo] = 0;
+          }
           await Portfolio.updateOne({_id: potfolioUser._id}, {
               coins: {
                   ...potfolioUser.coins,

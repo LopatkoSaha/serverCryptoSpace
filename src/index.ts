@@ -33,9 +33,9 @@ app.use((err: any, req: any, res: any, next: any) => {
 
     switch (err.errName) {
         case "TokenExpiredError":
-            return  res.status(403).json(err.message);
+            return  res.status(403).json(err);
         case "JsonWebTokenError":
-            return  res.status(402).json(err.message);
+            return  res.status(402).json(err);
         case "RegistrationError":
             return  res.status(407).json(err.message);
         case "LoginError":
