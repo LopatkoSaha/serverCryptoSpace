@@ -33,3 +33,9 @@ export class StatisticsCursError extends Error {
 export class WhoAmIError extends Error {
     public errName = "WhoAmIError";
 }
+export class QuantityUsersError extends Error {
+    public errName = "QuantityUsersError";
+}
+export class BestCoursesError extends Error {
+    public errName = "BestCoursesError";
+}
