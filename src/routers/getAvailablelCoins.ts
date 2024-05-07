@@ -2,6 +2,8 @@ import express, { NextFunction } from "express";
 
 import { actualCoins, coinsIcon } from "../actualCoins";
 import {  ActualCoinsError } from "../errors/errors";
+import { User } from "../dbModels/User";
+
 
 
 const router = express.Router();

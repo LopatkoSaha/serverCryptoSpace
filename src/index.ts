@@ -12,6 +12,8 @@ import getAvailablelCoins from "./routers/getAvailablelCoins";
 import getDataPortfolio from "./routers/getDataPortfolio";
 import getStatisticsCurs from "./routers/getStatisticsCurs";
 import whoAmI from "./routers/whoAmI";
+import quantityUsers from "./routers/quantityUsers";
+import bestCourses from "./routers/bestCourses";
 import "./webSocketServer";
 
 const app = express();
@@ -28,6 +30,8 @@ app.use("/statisticsCurs", getStatisticsCurs);
 app.use("/availableCoins", getAvailablelCoins);
 app.use("/buyCurrency", checkAuthUser, buyCurrency);
 app.use("/portfolio", checkAuthUser, getDataPortfolio);
+app.use("/quantityUsers", quantityUsers);
+app.use("/bestCourses", bestCourses);
 
 app.use((err: any, req: any, res: any, next: any) => {
 
@@ -35,23 +39,27 @@ app.use((err: any, req: any, res: any, next: any) => {
         case "TokenExpiredError":
             return  res.status(403).json(err);
         case "JsonWebTokenError":
-            return  res.status(402).json(err);
+            return  res.status(405).json(err);
         case "RegistrationError":
-            return  res.status(407).json(err.message);
+            return  res.status(406).json(err.message);
         case "LoginError":
-            return  res.status(408).json(err.message);
+            return  res.status(407).json(err.message);
         case "BuyCurrencyError":
-            return  res.status(410).json(err.message);
+            return  res.status(408).json(err.message);
         case "BuyAllInError":
-            return  res.status(410).json(err.message);
-        case "ActualCoinsError":
-            return  res.status(412).json(err.message);
-        case "DataPortfolioError":
-            return  res.status(414).json(err.message);
-        case "StatisticsCursError":
-            return  res.status(411).json(err.message);
-        case "WhoAmIError":
             return  res.status(409).json(err.message);
+        case "ActualCoinsError":
+            return  res.status(410).json(err.message);
+        case "DataPortfolioError":
+            return  res.status(411).json(err.message);
+        case "StatisticsCursError":
+            return  res.status(412).json(err.message);
+        case "WhoAmIError":
+            return  res.status(414).json(err.message);
+        case "QuantityUsersError":
+            return  res.status(415).json(err.message);
+        case "BestCoursesError":
+            return  res.status(415).json(err.message);
         default: res.status(500).json("unknown error");
     }
 });
