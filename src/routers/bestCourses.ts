@@ -2,7 +2,7 @@ import express, { NextFunction } from "express";
 
 import { BestCoursesError } from "../errors/errors";
 import { Coins } from "../dbModels/Coins";
-import { actualCoins } from "../actualCoins";
+import { actualCoins, coinsIcon } from "../actualCoins";
 
 
 
@@ -23,11 +23,14 @@ router.post("/", async (req: any, res: any, next: NextFunction) => {
               )
               .sort({createdDate: 1},
               );
-              const firstCourse = coursesFrame[0];
-              const lastCourse = coursesFrame[coursesFrame.length-1];
+            const firstCourse = coursesFrame[0];
+            const lastCourse = coursesFrame[coursesFrame.length-1];
+
             const bestCourse = actualCoins.map(item => {
+              
+                firstCourse[item] ? firstCourse[item] : firstCourse[item] = 1;
                 const dinamic = (100 * (lastCourse[item] - firstCourse[item]) / firstCourse[item]).toFixed(2);
-                return {item, course: lastCourse[item], dinamic: +dinamic}
+                return {name: item, course: lastCourse[item], dinamic: +dinamic, icon: coinsIcon[item]}
             }).sort((a, b) => b.dinamic - a.dinamic)
             res.json(bestCourse.slice(0, 4))
         } catch (err) {
